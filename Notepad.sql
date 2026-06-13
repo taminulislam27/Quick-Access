@@ -6,6 +6,7 @@
 ---------------------------------------
 ------SQL Queries & Commands-----------
 ---------------------------------------
+--TMS DB: https://github.com/taminulislam27/Quick-Access/blob/875ae23697775ba6a3077ba323783906ede720c7/tms_db.sql
 --SQL Query sample: Show the name and phone number of organizer who organized the Super Cup.
 --retrieve-- command --> SELECT
     SELECT organizer.organizer_name, organizer.phone 
@@ -268,6 +269,12 @@ team name, coach name. */
     JOIN umpire u ON mu.umpire_id = u.umpire_id
     WHERE m.round_type = "Semi Final"; 
 45. Write an SQL query to display all players who played in the final match.
+    SELECT p.player_name, t.team_id FROM `team` t 
+    JOIN player p ON t.team_id = p.team_id
+    WHERE t.team_id IN (SELECT m.team1_id FROM `matchinfo` m 
+    WHERE m.round_type = "Final")
+    OR t.team_id IN (SELECT m.team2_id FROM `matchinfo` m 
+    WHERE m.round_type = "Final"); 
 
 --Sub queries
 46. Write an SQL query to display players belonging to team Tigers using subquery.
@@ -280,17 +287,38 @@ team name, coach name. */
 
 --Advanced Level
 53. Write an SQL query to display the top 3 run scorers.
+    SELECT p.player_id, p.player_name, s.runs FROM `scorecard` s
+    JOIN player p ON s.player_id = p.player_id
+    ORDER BY s.runs DESC LIMIT 3;
 54. Write an SQL query to display the team that won the maximum number of matches.
+    SELECT m.winner_team_id, t.team_name, COUNT(m.match_id) FROM `matchinfo` m
+    JOIN team t ON m.winner_team_id = t.team_id
+    GROUP BY m.winner_team_id
+    ORDER BY COUNT(m.match_id) DESC LIMIT 1;
 55. Write an SQL query to display the team eliminated in quarter-final matches.
-56. Write an SQL query to display all undefeated teams.
+    SELECT t.team_id, t.team_name, m.round_type FROM `matchinfo` m 
+    JOIN team t ON m.loser_team_id = t.team_id
+    WHERE m.round_type = "Quarter Final"; 
+56. (**)Write an SQL query to display all undefeated teams.
+    --যে দল loser_team_id-তে নেই, সেই দল undefeated।
+    SELECT t.team_id, t.team_name FROM `team` t 
+    WHERE t.team_id NOT IN (SELECT m.loser_team_id FROM matchinfo m); 
 57. Write an SQL query to display teams that reached the final.
 58. Write an SQL query to display players who scored more than 50 runs.
 59. Write an SQL query to display the most experienced umpire.
 60. Write an SQL query to display the tournament champion.
-61. Write an SQL query to calculate the win percentage of each team.
+61. (**)Write an SQL query to calculate the win percentage of each team.
 62. Write an SQL query to display the player with the highest total runs.
-63. Write an SQL query to display teams that played more than 3 matches.
-64. Write an SQL query to display matches where the winning margin exceeded a specified value.
+63. (**)Write an SQL query to display teams that played more than 3 matches.
+    --AF (COUNT, SUM, etc) ব্যবহার করলে HAVING ব্যবহার করতে হয়।
+    SELECT t.team_id, t.team_name, COUNT(m.match_id) FROM `team` t 
+    JOIN matchinfo m ON t.team_id = m.team1_id OR t.team_id = m.team2_id
+    GROUP BY t.team_id, t.team_name
+    HAVING COUNT(m.match_id)>3; 
+64. (**)Write an SQL query to display matches where the winning margin exceeded a specified value.
+    --The current database schema does not store the winning margin of a match.
 65. Write an SQL query to rank teams based on points.
-
+    SELECT p.team_id, p.points FROM `points_table` p 
+    JOIN team t ON p.team_id = t.team_id
+    ORDER BY p.points DESC; 
 ---------------------------
