@@ -322,3 +322,71 @@ team name, coach name. */
     JOIN team t ON p.team_id = t.team_id
     ORDER BY p.points DESC; 
 ---------------------------
+
+
+
+---------------------------------------
+------- Learn SQL (Online)-------------
+---------------------------------------
+--Library Management System (lms)------
+---------------------------------------
+------SQL Queries & Commands-----------
+---------------------------------------
+--LMS DB: Import from DBMS Repo
+
+/*Sample Question 
+Instructions:
+Import the provided database of the library management system and try to understand the structure of the
+database by exploring it, and with the help of the schema diagram from the designer view. Now write SQL
+query for the following questions. First, execute the SQL query in your SQL editor, then write it in this answer
+script.*/
+
+Write SQL query for each question:
+
+1. Write a query to find the title of book, author name, published date, category of all the books available
+in the library.
+SQL:SELECT b.book_title, a.author_name, b.published_date, c.category_name FROM `books` b 
+    JOIN authors a ON b.author_id = a.author_id
+    JOIN category c ON b.book_category = c.id;
+
+2. Find the number of books on each category (category name and number of book).
+SQL:SELECT c.category_name, COUNT(b.book_title) FROM `books` b 
+    JOIN category c ON b.book_category = c.id
+    GROUP BY c.id; 
+
+3. Find the details of each borrower who has borrowed book at least two times.
+SQL:SELECT b.borrower_id, b.firstname, b.address, b.email, b.phone, b.department, COUNT(bb.book_id) AS 'No. of Books' 
+    FROM `borrow_book` bb
+    JOIN borrowers b ON bb.borrower_id = b.borrower_id
+    GROUP BY bb.borrower_id
+    HAVING COUNT(bb.book_id)>=2; 
+
+4. List the publisher detail that has more than two books in the list.
+SQL:SELECT p.publisher_id, COUNT(b.book_id) AS 'No. of Books' FROM `books` b 
+    JOIN publisher p ON b.publisher_id = p.publisher_id
+    GROUP BY b.publisher_id
+    HAVING COUNT(b.book_id)>=2; 
+
+5. Show the details of the book which are not borrowed yet.
+SQL:SELECT * FROM `books` b 
+    WHERE b.book_id NOT IN (SELECT bb.book_id FROM `borrow_book` bb); 
+
+6. Create a view which shows the list of borrower name (firstanme and lastname), book title.
+SQL:CREATE VIEW view_list AS 
+    SELECT CONCAT(br.firstname, ' ', br.lastname) AS 'Name', b.book_title FROM `borrow_book` bb
+    JOIN borrowers br ON bb.borrower_id = br.borrower_id
+    JOIN books b ON bb.book_id = b.book_id;
+
+7. (**)Show the list of book where the first letter of the book and the author name is same (book title, author
+name).
+
+8. Write a SQL query to find the average fine.
+SQL: SELECT AVG(fine_amount) FROM `fine`;
+
+9. Find the name of each borrower with how much amount was fined.
+SQL:
+
+10. Show the list of book from publisher McGrawhill.
+SQL:SELECT b.book_title, p.name FROM `books` b 
+    JOIN publisher p ON b.publisher_id = p.publisher_id
+    WHERE p.name = "McGrawhill"; 
