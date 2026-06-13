@@ -6,7 +6,7 @@
 ---------------------------------------
 ------SQL Queries & Commands-----------
 ---------------------------------------
---TMS DB: https://github.com/taminulislam27/Quick-Access/blob/875ae23697775ba6a3077ba323783906ede720c7/tms_db.sql
+--TMS DB: Import from DBMS Repo
 --SQL Query sample: Show the name and phone number of organizer who organized the Super Cup.
 --retrieve-- command --> SELECT
     SELECT organizer.organizer_name, organizer.phone 
@@ -384,7 +384,9 @@ name).
 SQL: SELECT AVG(fine_amount) FROM `fine`;
 
 9. Find the name of each borrower with how much amount was fined.
-SQL:
+SQL:SELECT CONCAT(br.firstname, ' ', br.lastname) AS Name, f.fine_amount FROM `fine` f 
+    JOIN borrow_book bb ON f.borrow_id = bb.id
+    JOIN borrowers br ON bb.borrower_id = br.borrower_id; 
 
 10. Show the list of book from publisher McGrawhill.
 SQL:SELECT b.book_title, p.name FROM `books` b 
